@@ -30,8 +30,12 @@ h3{
     color: #434343;
     margin: 20px auto auto auto;
 }
-h4{
+.total-price{
     text-align: center;
+    font-size: 16px;
+    padding: 10px;
+    border: 2px solid #f7b500;
+    margin: 20px 60px;
     color: #f7b500;
 }
 p{
@@ -74,10 +78,11 @@ li h5{
 /* PDF STYLES */
 #container-pdf{
     display: none;
-    background: white;
     width: 800px;
     margin: 10px auto;
-    padding: 40px;
+}
+#pdf-page{
+    background: white;
 }
 #container-pdf div{
     margin: 10px;
@@ -93,6 +98,11 @@ li h5{
 #container-pdf .pdf-cost{
     margin: 20px auto;
     padding: 10px auto;
+}
+#container-pdf .pdf-total-list{
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
 #container-pdf h4{
     display: inline;
@@ -133,6 +143,9 @@ form{
 }
 form#component-form{
     text-align: center;
+}
+form#msp-form{
+    text-align: right;
 }
 form#hpu-sys-params-form{
     text-align: right;
@@ -207,20 +220,49 @@ button.yellow:hover{
     background-color: #e7aa05;
     cursor: pointer;
 }
-button.edit{
-    background-color: white;
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    padding: 10px;
-    font-size: 16px;
+#advanced-opts{
+    text-align: right;
+    font-size: 12px;
     color: #67bfc2;
-    border-bottom: 1px solid #ddd;
-    border-radius: 0;
 }
-button.gray.edit:hover{
-    background-color: white;
+#advanced-opts:hover{
     color: #72d1d4;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.li-edit{
+    display: none;
+}
+.li-edit:hover{
+    color: #72d1d4;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.li-edit.active{
+    display: block;
+    color: #67bfc2;
+    font-style: italic;
+    display: inherit;
+}
+p.assem-price{
+    padding: 10px;
+    margin: 0 auto 20px auto;
+    font-size: 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #67bfc2;
+}
+.edit-inputs{
+    margin: 0;
+    font-size: 12px;
+    text-align: right;
+    color: #67bfc2;
+    font-style: italic;
+}
+.edit-inputs:hover {
+    color: #72d1d4;
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 /* DIV STYLES */
@@ -303,10 +345,9 @@ button.gray.edit:hover{
     display: block;
 }
 
-/* LOGIN POPUP STYLES */
+/* LOGIN STYLES */
 .login-popup-wrapper{
-    display: none;
-    background: rgba(0,0,0,0.5);
+    background: #d4d4d4;
     position: fixed;
     top: 0;
     left: 0;
@@ -327,12 +368,21 @@ button.gray.edit:hover{
 .login-popup-div h2{
     color: #72d1d4;
 }
-.login-popup-close{
-    position: absolute;
-    font-size: 20px;
-    top: 5px;
-    right: 15px;
+#login-div{
+    display: flex;
+    justify-content: space-between;
+    color: #72d1d4;
+    font-size: 12px;
+    margin: 0;
+}
+#logout:hover{
+    color: #72d1d4;
     cursor: pointer;
+    text-decoration: underline;
+}
+#login-error{
+    color: #67bfc2;
+    font-style: italic;
 }
 
 
@@ -351,6 +401,7 @@ button.gray.edit:hover{
     text-align: center;
     width: 100%;
     max-width: 700px;
+    min-width: 350px;
     margin: 120px auto;
     padding: 20px;
     background: white;
@@ -361,7 +412,7 @@ button.gray.edit:hover{
 .valve-popup-div h2{
     color: #72d1d4;
 }
-.valve-popup-close{
+.valve-popup-close-x{
     position: absolute;
     font-size: 20px;
     top: 5px;
@@ -369,15 +420,33 @@ button.gray.edit:hover{
     cursor: pointer;
 }
 #valve-settings-div{
+    background-color: #f5f5f5;
     display: flex;
+    align-items: center;
     justify-content: space-around;
     flex-wrap: wrap;
-}
-#valve-settings-div div{
     margin: 10px;
     padding: 10px;
+    border-radius: 5px;
+}
+div#valve-port-size-div{
+    margin: 10px;
+    padding: 10px;
+    width: 160px;
+    font-size: 14px;
+    border: 1px solid;
+    border-radius: 3px;
+}
+select#solenoid-voltage{
+    margin: 10px;
+    width: 180px;
+}
+button.valve-img-btn{
+    margin: 10px;
+    width: 180px;
 }
 #valve-popup-form select{
+    margin: 0;
     width: 180px;
 }
 #valve-dropdowns-div{
@@ -404,11 +473,11 @@ button.gray.edit:hover{
     height: 100%;
     overflow: auto;
 }
-.valve-img-div{
+#valve-img-div{
     text-align: center;
     width: 100%;
-    max-width: 400px;
-    margin: 80px auto;
+    max-width: 800px;
+    margin: 20px auto;
     padding: 20px;
     background: white;
     position: relative;
@@ -418,7 +487,7 @@ button.gray.edit:hover{
 .valve-img-div h2{
     color: #72d1d4;
 }
-.valve-img-close{
+.valve-img-close-x{
     position: absolute;
     font-size: 20px;
     top: 5px;
@@ -426,7 +495,67 @@ button.gray.edit:hover{
     cursor: pointer;
 }
 img{
-    width: 260px;
+    width: 780px;
+}
+.caption{
+    margin-top: 4px;
+    margin-bottom: 30px;
+}
+
+/* POPUP TABLE STYLES */
+.table-wrapper{
+    display: none;
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.table-div{
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 150px auto;
+    padding: 20px;
+    background: white;
+    position: relative;
+    border: none;
+    border-radius: 5px;
+}
+.table-close-x{
+    position: absolute;
+    font-size: 20px;
+    top: 5px;
+    right: 15px;
+    cursor: pointer;
+}
+table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #d4d4d4;
+  }
+th,
+td {
+    padding: 5px;
+    text-align: center;
+}
+td{
+    font-size: 14px;
+    color: #818181;
+}
+tbody tr:nth-child(odd) {
+    background-color: white;
+
+}
+tbody tr:nth-child(even) {
+    background-color: #efefef;
+}
+tbody tr:hover{
+    background-color: #72d1d4;
+    cursor: pointer;
 }
 
 /* ERROR POPUP STYLES */
@@ -443,7 +572,7 @@ img{
     text-align: center;
     width: 100%;
     max-width: 400px;
-    margin: 120px auto;
+    margin: 140px auto;
     padding: 20px;
     background: white;
     position: relative;
@@ -453,10 +582,13 @@ img{
 .error-popup-div h2{
     color: #72d1d4;
 }
-.error-popup-close{
+.error-popup-close-x{
     position: absolute;
     font-size: 20px;
     top: 5px;
     right: 15px;
+    cursor: pointer;
+}
+.error-popup-close-btn{
     cursor: pointer;
 }

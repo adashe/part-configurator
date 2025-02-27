@@ -72,29 +72,40 @@ class HpuAssembly{
 
         let filteredData;
         let minCap;
+        let result;
 
-        if(resOrient == 'horizontal'){
-            filteredData = data.filter(reservoir => reservoir.code.includes('H'));
-            minCap = this.pump.gpm1750 * 2.5;
-            console.log('H minCap:', minCap);
-        } else if (resOrient == 'vertical'){
+        if(resOrient == 'vertical'){
             filteredData = data.filter(reservoir => reservoir.code.includes('V'))
             minCap = this.pump.gpm1750 * 3;
-            console.log('V minCap:', minCap);
+            // console.log('V minCap:', minCap);
+            result = filteredData.filter(reservoir => reservoir.capacity >= minCap);
+
+            // Return vertical reservoir, or replace with horizontal reservoir if no valid vertical reservoir results
+            if(result.length == 0){
+                // Show error message only when number is initially generated, not after admin edits are made
+                if(partNumDiv.style.display != 'block'){
+                    displayErrorMsg('No valid vertical reservoir results.<br>Replaced with horizontal reservoir.');
+                }
+            } else {
+                this.reservoir = result.reduce((prev, curr) => (prev.capacity < curr.capacity) ? prev : curr);
+                return this.reservoir;
+            };
         };
 
-        let result = filteredData.filter(reservoir => reservoir.capacity >= minCap);
+        // Calculate horizontal reservoir
+        filteredData = data.filter(reservoir => reservoir.code.includes('H'));
+        minCap = this.pump.gpm1750 * 2.5;
+        // console.log('H minCap:', minCap);
+        result = filteredData.filter(reservoir => reservoir.capacity >= minCap);
 
-        if(result.length == 0 && resOrient == 'vertical'){
-            displayErrorMsg('No valid vertical reservoir results - try horizontal reservoir')
-        } else if(result.length == 0){
+        if(result.length == 0){
             console.log('No valid reservoir results.');
             displayErrorMsg('No valid reservoir results.');
         } else {
             this.reservoir = result.reduce((prev, curr) => (prev.capacity < curr.capacity) ? prev : curr);
         };
 
-        console.log('reservoir', this.reservoir);
+        // console.log('reservoir', this.reservoir);
 
         return this.reservoir;
     }
@@ -112,7 +123,7 @@ class HpuAssembly{
         const rotationSpeed = 1750;
         const minDis = 231 * maxFl / rotationSpeed;
 
-        console.log('minDis:', minDis);
+        // console.log('minDis:', minDis);
 
         let result = [];
 
@@ -129,7 +140,7 @@ class HpuAssembly{
             this.pump = result.reduce((prev, curr) => (prev.dispCID < curr.dispCID) ? prev : curr);
         };
 
-        console.log('pump', this.pump);
+        // console.log('pump', this.pump);
 
         return this.pump;
     }
@@ -150,18 +161,31 @@ class HpuAssembly{
 
         // minHIP includes 10% fudge factor 
         const minHP = ((maxPres * maxFl) / (1714 * 0.85)) - .1;
-        console.log('minHP:', minHP);
+        // console.log('minHP:', minHP);
 
         let result = [];
-
+        
         if(this.pump.mountType == 'SAE A'){
-            result = data.filter(motor => motor.type == "MF" && motor.outputHP >= minHP);
-        } else if (this.pump.mountType == 'SAE B'){
+            if(minHP <= 2){
+                // If the pump mount type is SAE A but it is low min HP, select from small SAE B motors
+                result = data.filter(motor => motor.type == "MTC" && motor.SAEAadapterCost && motor.outputHP >= minHP);
+            } else {
+                // If the pump mount type is SAE A and with min HP higher than 3, look for valid results in the SAE A motors
+                result = data.filter(motor => motor.type == "MF" && motor.outputHP >= minHP);
+            }
+            
+            // If no valid results among low HP SAE B or SAE A, look for results among SAE B motors with SAE A adapter options
+            if (result.length == 0){
+                result = data.filter(motor => motor.type == "MTC" && motor.SAEAadapterCost && motor.outputHP >= minHP);
+            };
+        } 
+        
+        // If the pump mount type is SAE B, look for valid results in SAE B motors
+        if(this.pump.mountType == 'SAE B'){
             result = data.filter(motor => motor.type == "MTC" && motor.outputHP >= minHP);
-        } else {
-            console.log('Cannot calculate motor without pump mount type');
-        };
+        }
 
+        // If no valid results are found among SAE A nor SAE B motors, display error message
         if(result.length == 0){
             this.motor = null;
             console.log('No valid motor results.');
@@ -170,7 +194,7 @@ class HpuAssembly{
             this.motor = result.reduce((prev, curr) => (prev.outputHP < curr.outputHP) ? prev : curr);
         };
 
-        console.log('motor', this.motor);
+        // console.log('motor', this.motor);
 
         return this.motor;
     }
@@ -205,7 +229,7 @@ class HpuAssembly{
             console.log('Cannot calculate manifold without port size');
         };
 
-        console.log('manifold', this.manifold);
+        // console.log('manifold', this.manifold);
 
         return this.manifold;
     }
@@ -232,9 +256,9 @@ class HpuAssembly{
         // ADDER 1 = #Lspools * L spool multiplier (above)
         const adder1 = numLValves * -.1;
 
-        console.log('num l valves', numLValves);
-        console.log('num flow control', numFlowCtrl);
-        console.log('adder 1', adder1);
+        // console.log('num l valves', numLValves);
+        // console.log('num flow control', numFlowCtrl);
+        // console.log('adder 1', adder1);
 
         // Calculate adder 2
         // ADDER 2 = if max pressure > 2000, use 5%, if max pressure > 1000 use 2%, if neither use 0%
@@ -248,25 +272,25 @@ class HpuAssembly{
             adder2 = 0;
         }
 
-        console.log('adder 2', adder2);
+        // console.log('adder 2', adder2);
 
         // Calculate adder 3
         // ADDER 3 = total num flow controls * flow control adder value (above)
         const adder3 = numFlowCtrl * .02;
-        console.log('adder 3', adder3);
+        // console.log('adder 3', adder3);
 
         // needed dissipation = minHP (from motor calc) * (base multiplier + ADDER1 + ADDER2 + ADDER3) 
         const minHP = ((maxPres * maxFl) / (1714 * 0.85));
-        console.log('min HP in HE', minHP);
+        // console.log('min HP in HE', minHP);
         const baseMult = .15;
         const allAdders = baseMult + adder1 + adder2 + adder3;
         const minHtDis = minHP * allAdders;
-        console.log('min ht dis', minHtDis);
+        // console.log('min ht dis', minHtDis);
 
         // reservoir heat dissipation (reservoir table)
         // value = needed dissipation - reservoir dissipation 
         const reqDis = minHtDis - this.reservoir.heatDis;
-        console.log('req dis (min ht dis - reservoir ht dis)', reqDis)
+        // console.log('req dis (min ht dis - reservoir ht dis)', reqDis)
 
         // console.log('reqDis:', reqDis);
 
@@ -299,7 +323,7 @@ class HpuAssembly{
 
         // final calculation of needed dissipation cannot be less than 0
 
-        console.log('heat exchanger', this.heatExchanger);
+        // console.log('heat exchanger', this.heatExchanger);
 
         return this.heatExchanger;
     }
@@ -314,6 +338,15 @@ class HpuAssembly{
             prices = [this.reservoir.vCost, this.pump.vCost, this.motor.vCost, this.manifold.vCost, this.heatExchanger.vCost];
         };
 
+        // Add cost of adapters to SAE-B motors
+        if(this.pump.mountType == 'SAE A' && this.motor.type == 'MTC'){
+            prices.push(this.motor.SAEAadapterCost);
+            // console.log('adding adapter A cost', this.motor.SAEAadapterCost);
+        } else if(this.pump.mountType == 'SAE B'){
+            prices.push(this.motor.SAEBadapterCost);
+            // console.log('adding adapter B cost', this.motor.SAEBadapterCost);
+        }
+
         if(prices.includes(null)){
             console.log('Invalid configuration.');
             displayErrorMsg('Invalid vertical or horizontal configuration.');
@@ -324,7 +357,7 @@ class HpuAssembly{
         };
 
         // console.log('prices', prices);
-        // console.log('total cost', totalCost);
+        // console.log('hpu cost', this.totalCost, typeof this.totalCost);
 
         return this.totalCost;
     }

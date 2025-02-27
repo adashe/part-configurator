@@ -1,8 +1,9 @@
+const valvePortSizeDiv = document.querySelector('#valve-port-size-div');
 const valveSolVoltDiv = document.querySelector('#valve-sol-volt-div');
 const solenoidVoltage = document.querySelector('#SolenoidVoltage');
 
 const valvePopupWrapper = document.querySelector('.valve-popup-wrapper');
-const valvePopupCloseButton = document.querySelector('.valve-popup-close');
+const valvePopupCloseButtonX = document.querySelector('.valve-popup-close-x');
 const valvePopupContent = document.querySelector('.valve-popup-content');
 const valvePopupForm = document.querySelector('#valve-popup-form');
 
@@ -18,7 +19,7 @@ const displayValvePopup = () => {
 };
 
 // Valve popup close button
-valvePopupCloseButton.addEventListener('click', e => {
+valvePopupCloseButtonX.addEventListener('click', e => {
     e.preventDefault();
     solenoidVoltage.value = '';
     resetValveInputs();
@@ -50,6 +51,7 @@ const prefillValveSettingsFromHPUInputs = () => {
     // Check for values in hpuInputs array and prefill each dropdown if present
     if(hpuInputs.portSize){
         valveInputs.portSize = hpuInputs.portSize;
+        valvePortSizeDiv.innerHTML = `Port Size: ${valveInputs.portSize}`;
     };
 
     if(hpuInputs.numStat){
@@ -75,18 +77,23 @@ async function prefillValvePopupFromValveAssembly(){
                 let elementID = `valve${i}`;
                 let element = document.getElementById(elementID);
                 element.value = valveAssem[station].valve.code;
-            };
-    
-            if(valveAssem[station].flowControl && valveAssem[station].flowControl.code){
-                let elementID = `flowControl${i}`;
-                let element = document.getElementById(elementID);
-                element.value = valveAssem[station].flowControl.code;
-            };
-    
-            if(valveAssem[station].checkValve && valveAssem[station].checkValve.code){
-                let elementID = `checkValve${i}`;
-                let element = document.getElementById(elementID);
-                element.value = valveAssem[station].checkValve.code;
+
+                // Prefill flow control and check valve only if valve is selected
+                if(valveAssem[station].valve.code != 0){
+                    if(valveAssem[station].flowControl && valveAssem[station].flowControl.code){
+                        let elementID = `flowControl${i}`;
+                        let element = document.getElementById(elementID);
+                        element.value = valveAssem[station].flowControl.code;
+                        element.removeAttribute('disabled');
+                    };
+            
+                    if(valveAssem[station].checkValve && valveAssem[station].checkValve.code){
+                        let elementID = `checkValve${i}`;
+                        let element = document.getElementById(elementID);
+                        element.value = valveAssem[station].checkValve.code;
+                        element.removeAttribute('disabled');
+                    };
+                };
             };
         };
     };
@@ -113,7 +120,7 @@ const generateValveDropdown = (data, i) => {
                 <label for="valve${i}"></label>
                 <select name="valve${i}" id="valve${i}" class="valve" required>
                     <option value="" disabled selected hidden>Select valve...</option>
-                    <option value="0">No valve</option>
+                    <option value="0">No valve (includes coverplate)</option>
                 `;
 
     data.forEach(valve => {
@@ -130,7 +137,7 @@ const generateFlowControlDropdown = (data, i) => {
 
     let html = `
                 <label for="flowControl${i}"></label>
-                <select name="flowControl${i}" id="flowControl${i}" class="flowControl" required>
+                <select name="flowControl${i}" id="flowControl${i}" class="flowControl" required disabled>
                     <option value="" disabled selected hidden>Select flow control...</option>
                     <option value="0">No flow control</option>
                 `;
@@ -149,7 +156,7 @@ const generateCheckValveDropdown = (data, i) => {
 
     let html = `
                 <label for="checkValve${i}"></label>
-                <select name="checkValve${i}" id="checkValve${i}" class="checkValve" required>
+                <select name="checkValve${i}" id="checkValve${i}" class="checkValve" required disabled>
                     <option value="" disabled selected hidden>Select check valve...</option>
                 `;
 
@@ -192,6 +199,38 @@ async function generateAllValveDropdowns(){
 
     };
 
+    // Add event listener to enable flow control and check valve dropdowns when valve is selected
+    addEventListenerToEnableDropdowns();
+
+};
+
+// Event listener to enable flow control and check valve dropdowns when the valve selection is changed from null / no valve
+const addEventListenerToEnableDropdowns = () => {
+    const valveDropdowns = document.querySelectorAll('.valve');
+
+    valveDropdowns.forEach((dropdown, i) => {
+        const flCtrlID = `flowControl${i}`;
+        const chValveID = `checkValve${i}`;
+
+        const flCtl = document.getElementById(flCtrlID);
+        const chValve = document.getElementById(chValveID);
+
+        dropdown.addEventListener('change', e => {
+            e.preventDefault();
+
+            if(e.target.value != 0){
+                flCtl.removeAttribute('disabled');
+                chValve.removeAttribute('disabled');
+            } else if (e.target.value == 0){
+                flCtl.value = "";
+                chValve.value = "";
+
+                flCtl.setAttribute("disabled", true);
+                chValve.setAttribute("disabled", true);
+            };
+        });
+    });
+
 };
 
 valvePopupForm.addEventListener('submit', e => {
@@ -203,6 +242,7 @@ valvePopupForm.addEventListener('submit', e => {
 
 });
 
+// Build valve assembly object from valve form inputs 
 async function addValveInputsToValveAssembly(){
 
     let counter = []
@@ -224,7 +264,18 @@ async function addValveInputsToValveAssembly(){
         let flowControl = document.getElementById(flowControlID);
         let checkValve = document.getElementById(checkValveID);
 
-        let promise = valveAssem.updateStation(stationName, valve.value, flowControl.value, checkValve.value);
+        // Assign value of 0 to null (disabled) flow control and check valve options
+        let flowControlValue = flowControl.value;
+        if(!flowControl.value){
+            flowControlValue = 0
+        };
+
+        let checkValveValue = checkValve.value;
+        if(!checkValve.value){
+            checkValveValue = 0
+        };
+
+        let promise = valveAssem.updateStation(stationName, valve.value, flowControlValue, checkValveValue);
     
         promises.push(promise);
     };
@@ -242,6 +293,7 @@ async function addValveInputsToValveAssembly(){
 
 };
 
+// Update valve and HPU number display when edits are made from the display page, including updating the heat exchanger if necessary
 async function updateValvesAndHPU(){
 
     await addValveInputsToValveAssembly();

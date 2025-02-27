@@ -1,6 +1,8 @@
 const valveImageButton = document.querySelector('.valve-img-btn')
 const valveImgWrapper = document.querySelector('.valve-img-wrapper');
-const valveImgCloseButton = document.querySelector('.valve-img-close');
+const valveImgDiv = document.querySelector('#valve-img-div');
+const valveImgCloseButtonX = document.querySelector('.valve-img-close-x');
+const valveImgCloseBtn = document.querySelector('.valve-img-popup-close-btn');
 const valveImgContent = document.querySelector('.valve-img-content');
 const valveImgForm = document.querySelector('#valve-img-form');
 
@@ -12,11 +14,16 @@ valveImageButton.addEventListener('click', e => {
 // Display popup with valve images
 async function displayValveImg(){
     await generateValveImages();
-    valveImgWrapper.style.display = 'block';
 };
 
-// Valve popup close button
-valveImgCloseButton.addEventListener('click', e => {
+// Valve popup close buttons
+valveImgCloseButtonX.addEventListener('click', e => {
+    e.preventDefault();
+    valveImgContent.innerHTML = '';
+    valveImgWrapper.style.display = 'none';
+});
+
+valveImgCloseBtn.addEventListener('click', e => {
     e.preventDefault();
     valveImgContent.innerHTML = '';
     valveImgWrapper.style.display = 'none';
@@ -25,7 +32,9 @@ valveImgCloseButton.addEventListener('click', e => {
 async function generateValveImages(){
 
     if(!valveInputs.solVolt){
-        html = `<p>Select voltage to view images</p>`
+
+        displayErrorMsg('Select voltage to view images');
+
     } else {
         let valveData = await valveAssem.getFilteredValveData(valveInputs.portSize, valveInputs.solVolt);
 
@@ -34,13 +43,17 @@ async function generateValveImages(){
         valveData.forEach(valve => {
             html += `
                 <img src="${valve.img}" alt="${valve.code}" />
-                <p>${valve.code}</p>
+                <p class="caption">${valve.code}</p>
             `;
         });
     
         html += `</div>`;
-    }
 
-    valveImgContent.innerHTML = html;
+        valveImgContent.innerHTML = html;
+
+        valveImgWrapper.style.display = 'block';
+        valveImgWrapper.scrollTop = 0;
+
+    };
 
 };

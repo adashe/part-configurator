@@ -1,31 +1,59 @@
 const loginPopup = document.querySelector('.login-popup-wrapper');
 const loginForm = document.querySelector('#login-form');
+const loginErrorMsg = document.querySelector('#login-error');
 
-const admin = new User(username='admin', password='gilgamesh');
-const dist = new User(username='dist', password='odysseus');
+const userStatus = document.querySelector('#user-status');
+const logoutBtn = document.querySelector('#logout');
 
-let currentUser = null;
+const currentUser = new User();
 
-loginForm.addEventListener('click', e => {
+// Login if user is in session storage
+try{
+    loginFromSessionStorage();
+} catch (error){
+    console.error(error);
+}
+
+async function loginFromSessionStorage(){
+    let savedUser = null;
+    let parsedUser = null;
+
+    savedUser = sessionStorage.getItem("currentUser");
+    parsedUser = JSON.parse(savedUser);
+
+    if(parsedUser){
+        loginUser(parsedUser.username, parsedUser.password);
+    } else {
+        sessionStorage.clear();
+    }
+};
+
+
+// Login when login form is submitted
+loginForm.addEventListener('submit', e => {
     e.preventDefault();
 
     let un = loginForm.username.value;
     let pw = loginForm.password.value;
 
-    login(un, pw);
-
-    if(un == 'admin' && admin.loggedIn == true){
-        currentUser = admin;
-        loginPopup.style.display = 'none'
-    }
-
-    if(un == 'dist' && admin.loggedIn == true){
-        currentUser = dist;
-        loginPopup.style.display = 'none'
-    }
+    loginUser(un, pw);
 
 });
 
-const displayLoginDiv = () => {
-    loginPopup.style.display = 'block';
+async function loginUser(un, pw){
+
+    await currentUser.login(un, pw);
+
+    if(!currentUser.username){
+        loginErrorMsg.innerHTML = 'Invalid username or password';
+    } else if(currentUser.username){
+        sessionStorage.setItem("currentUser", JSON.stringify(currentUser));
+        loginPopup.style.display = 'none';
+        userStatus.innerHTML = `WELCOME, ${currentUser.username.toUpperCase()}!`;
+    };
 };
+
+logoutBtn.addEventListener('click', e => {
+    sessionStorage.clear();
+    window.location.reload();
+})
