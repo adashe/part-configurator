@@ -161,20 +161,17 @@ class HpuAssembly{
 
         // minHIP includes 10% fudge factor 
         const minHP = ((maxPres * maxFl) / (1714 * 0.85)) - .1;
-        // console.log('minHP:', minHP);
+        console.log('minHP:', minHP);
 
         let result = [];
         
         if(this.pump.mountType == 'SAE A'){
-            if(minHP <= 2){
-                // If the pump mount type is SAE A but it is low min HP, select from small SAE B motors
-                result = data.filter(motor => motor.type == "MTC" && motor.SAEAadapterCost && motor.outputHP >= minHP);
-            } else {
-                // If the pump mount type is SAE A and with min HP higher than 3, look for valid results in the SAE A motors
+            // First look for valid results for SAE A pumps among SAE A type motors
+            if(this.pump.mountType == 'SAE A'){
                 result = data.filter(motor => motor.type == "MF" && motor.outputHP >= minHP);
-            }
+            } 
             
-            // If no valid results among low HP SAE B or SAE A, look for results among SAE B motors with SAE A adapter options
+            // If no valid results among SAE A, look for results among SAE B motors with SAE A adapter options
             if (result.length == 0){
                 result = data.filter(motor => motor.type == "MTC" && motor.SAEAadapterCost && motor.outputHP >= minHP);
             };
