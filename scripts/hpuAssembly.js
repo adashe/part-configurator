@@ -161,7 +161,7 @@ class HpuAssembly{
 
         // minHIP includes 10% fudge factor 
         const minHP = ((maxPres * maxFl) / (1714 * 0.85)) - .1;
-        console.log('minHP:', minHP);
+        // console.log('minHP:', minHP);
 
         let result = [];
         
@@ -188,6 +188,7 @@ class HpuAssembly{
             console.log('No valid motor results.');
             displayErrorMsg('No valid motor results.');
         } else {
+            // Assign smallest sufficient selection of the valid results to hpu object
             this.motor = result.reduce((prev, curr) => (prev.outputHP < curr.outputHP) ? prev : curr);
         };
 
