@@ -60,21 +60,21 @@ const buildHpuNumberDisplay = (data) => {
         motorCost = (parseFloat(protoMotorCost) + motor.SAEAadapterCost).toFixed(2);
     } else if(pump.mountType == 'SAE B'){
         motorCost = (parseFloat(protoMotorCost) + motor.SAEBadapterCost).toFixed(2);
-    }
+    };
 
-
-    // Display part number at top of part number, edit, and email pages
+    // Display part number at top of part number and contact pages
+    const partNum = data.buildPartNum();
     partNumDisplay.forEach((element) => {
-        element.innerHTML = `N-${reservoir.code}-${pump.code}-${motor.code}-${manifold.code}-${heatExchanger.code}`;
+        element.innerHTML = `${partNum}`;
     });
 
-    // Display automatically-included parts on part number page
+    // Build dropdown for automatically-included parts
     const defaultsHTML = `
-            <div class="dropdown">
+        <div class="dropdown">
             <div class="trigger">INCLUDED FEATURES</div>
             <div class="content">        
                 <ul>
-                    <li>Filter</li>
+                    <li>Return Filter</li>
                     <li>Pressure Gauge</li>
                     <li>Level Sight Gauge</li>
                     <li>Drain Plug</li>
@@ -95,7 +95,7 @@ const buildHpuNumberDisplay = (data) => {
                     <li>Application Type: ${hpuInputs.appType}</li>
                     <li>Heat Exchanger Type: ${hpuInputs.heatExchType}</li>
                     <li>Number of Stations: ${hpuInputs.numStat}</li>
-                    <li>Port Size: ${hpuInputs.portSize}</li>
+                    <li>Valve Size: ${hpuInputs.portSize}</li>
                 </ul>
             </div>
         </div>
@@ -156,6 +156,8 @@ const buildHpuNumberDisplay = (data) => {
                     <li>Description: ${manifold.description}</li>
                     <li>Valve Pattern: ${manifold.valvePattern}</li>
                     <li>Number of Stations: ${manifold.numStations}</li>
+                    <li>P&T: ${manifold.PT}</li>
+                    <li>A&B: ${manifold.AB}</li>
                     <li>Price: $${manifoldCost}</li>
                     <li class="li-edit" id="edit-manifold">Edit manifold</li>
                 </ul>
@@ -204,19 +206,18 @@ const buildHpuNumberDisplay = (data) => {
         + pumpHTML 
         + motorHTML 
         + manifoldHTML 
-        + heatExchangerHTML 
-        + defaultsHTML
+        + heatExchangerHTML
+        + defaultsHTML 
         + inputsHTML 
         + hpuCostHTML
         ;
 
     toggleAdminSettings();
     addEventHandlersToDropdowns();
-    addEventHandlerToEditInputsBtn();
+    addEventHandlerToEditHpuInputs();
     addEventHandlerstoEditBtns();
 
     buildTotalCostDisplay();
-
 };
 
 // Add event handlers to dropdowns
@@ -236,6 +237,7 @@ const addEventHandlersToDropdowns = () => {
     });
 };
 
+// Toggle admin edit abilities when admin is logged in or out
 const toggleAdminSettings = () => {
     const liEdits = document.querySelectorAll('.li-edit');
 
@@ -244,19 +246,18 @@ const toggleAdminSettings = () => {
             li.classList.toggle('active');
         });
     }
-
 };
 
-const addEventHandlerToEditInputsBtn = () => {
-    const editHpuInputsButton = document.querySelector('#edit-hpu-inputs');
+// Add event handler to the edit hpu inputs button
+const addEventHandlerToEditHpuInputs = () => {
+    const editHpuInputs = document.querySelector('#edit-hpu-inputs');
 
-    editHpuInputsButton.addEventListener('click', e => {
+    editHpuInputs.addEventListener('click', e => {
         e.preventDefault();
 
         displayHpuSysParamsForm();
     });
 };
-
 
 // Add event handlers to edit buttons
 const addEventHandlerstoEditBtns = () => {
@@ -315,7 +316,6 @@ const addEventHandlerstoEditBtns = () => {
     
         tableWrapper.style.display = 'block';
     });
-    
 };
 
 
@@ -353,7 +353,6 @@ const displayReservoirTable = (data) => {
             tableWrapper.style.display = 'none';
         });
     });
-
 };
 
 // Display table with pump data and update HPU number with selected pump
@@ -391,7 +390,6 @@ const displayPumpTable = (data) => {
             tableWrapper.style.display = 'none';
         });
     });
-
 };
 
 // Display table with motor data and update HPU number with selected motor
@@ -429,7 +427,6 @@ const displayMotorTable = (data) => {
             tableWrapper.style.display = 'none';
         });
     });
-
 };
 
 // Display table with manifold data and update HPU number with selected manifold
@@ -467,7 +464,6 @@ const displayManifoldTable = (data) => {
             tableWrapper.style.display = 'none';
         });
     });
-
 };
 
 // Display table with heat exchanger data and update HPU number with selected heat exchanger
@@ -508,17 +504,18 @@ const displayHeatExchangerTable = (data) => {
 
 };
 
+// Build html to display total cost of HPU and valves on part number display
 const buildTotalCostDisplay = () => {
-
-    const total = calcTotalCost();
+    
+    const total = calcTotalHpuCost();
 
     totalCostDisplay.innerHTML = `<h4 class="total-price">TOTAL LIST PRICE: $${total.toFixed(2)}</h4>`
-
 };
 
-const calcTotalCost = () => {
+// Calculate total cost of HPU and valves
+const calcTotalHpuCost = () => {
     const hpuCost = parseFloat(hpuAssem.calcCost());
     const valveCost = parseFloat(valveAssem.calcCost()); 
 
     return hpuCost + valveCost;
-}
+};

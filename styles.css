@@ -133,62 +133,6 @@ li h5{
     }
   }
 
-/* FORM STYLES */
-form{
-    margin: 10px;
-    padding: 10px;
-    display: block;
-    font-family: "Source Sans 3", serif;
-    color: #434343;
-}
-form#component-form{
-    text-align: center;
-}
-form#msp-form{
-    text-align: right;
-}
-form#hpu-sys-params-form{
-    text-align: right;
-}
-form#hpu-manifold-form{
-    display: none;
-    text-align: right;
-}
-form#hpu-valve-form{
-    display: none;
-    text-align: right;
-}
-form#contact-form{
-    text-align: right;
-    margin: 10px 20px;
-}
-
-/* FORM INPUT STYLES */
-input{
-    display: inline-block;
-    width: 155px;
-    margin: 10px auto;
-    padding: 10px;
-    font-family: "Source Sans 3", serif;
-    color: #434343;
-}
-select{
-    display: inline-block;
-    width: 180px;
-    margin: 10px auto;
-    padding: 10px;
-    font-family: "Source Sans 3", serif;
-    color: #434343;
-}
-::placeholder {
-    font-style: italic;
-}
-label{
-    display: inline-block;
-    font-family: "Source Sans 3", serif;
-    color: #434343;
-}
-
 /* BUTTON STYLES */
 .button{
     display: block;
@@ -263,6 +207,126 @@ p.assem-price{
     color: #72d1d4;
     cursor: pointer;
     text-decoration: underline;
+}
+
+/* FORM INPUT STYLES */
+input{
+    display: inline-block;
+    width: 155px;
+    margin: 10px auto;
+    padding: 10px;
+    font-family: "Source Sans 3", serif;
+    color: #434343;
+}
+select{
+    display: inline-block;
+    width: 180px;
+    margin: 10px auto;
+    padding: 10px;
+    font-family: "Source Sans 3", serif;
+    color: #434343;
+}
+::placeholder {
+    font-style: italic;
+}
+label{
+    display: inline-block;
+    font-family: "Source Sans 3", serif;
+    color: #434343;
+}
+
+/* FORM STYLES */
+form{
+    margin: 10px;
+    padding: 10px;
+    display: block;
+    font-family: "Source Sans 3", serif;
+    color: #434343;
+}
+form#component-form{
+    text-align: center;
+}
+
+/* HPU forms */
+form#hpu-sys-params-form{
+    text-align: right;
+}
+form#hpu-manifold-form{
+    display: none;
+    text-align: right;
+}
+form#hpu-valve-form{
+    display: none;
+    text-align: right;
+}
+
+/* MS forms */
+form#ms-voltage-form{
+    text-align: right;
+}
+form#ms-starters-form{
+    display: none;
+}
+.starter-div{
+    display: flex;
+    width: 100%;
+    align-items: left;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.starter-div p{
+    width: 100%;
+    text-align: left;
+    margin: 20px auto 4px;
+    font-weight: 600;
+}
+.starter-input{
+    width: 110px;
+    margin: 4px auto;
+}
+.leader-selector{
+    width: 140px;
+    margin: 4px auto;
+}
+.leader-checkbox-div{
+    width: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.leader-checkbox-div label{
+    font-size: 12px;
+    margin-top: 4px;
+}
+input.leader-checkbox{
+    margin-bottom: 30px;
+}
+p.max-hp{
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    margin: 0 5px;
+}
+
+#ms-hp-msg{
+    display: flex;
+    justify-content: space-around;
+    font-size: 16px;
+    font-style: italic;
+    color: #818181;
+    font-weight: 600;
+    margin: 20px;
+    padding: 10px;
+}
+#ms-curr-hp-msg.alert{
+    color:indianred
+}
+
+/* Contact form */
+form#contact-form{
+    text-align: right;
+    margin: 10px 20px;
 }
 
 /* DIV STYLES */
