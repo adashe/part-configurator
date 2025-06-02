@@ -300,7 +300,12 @@ async function updateValvesAndHPU(){
     await addValveInputsToValveAssembly();
 
     if(partNumDiv.style.display == 'block'){
-        await updateHpuDiv();
+
+        if(hpuAssem.totalCost != null){
+            buildHpuNumberDisplay(hpuAssem);
+            buildValveDisplay(valveAssem);
+            displayPartNumDiv();
+        };
     };
 }
 

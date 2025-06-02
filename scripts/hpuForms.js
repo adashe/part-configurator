@@ -179,7 +179,7 @@ hpuValveForm.addEventListener('submit', e => {
 async function updateHpuDiv(){
 
     await hpuAssem.calcHpuNum(
-        hpuInputs.maxPres, 
+        hpuInputs.maxPres,
         hpuInputs.maxFlow, 
         hpuInputs.appType, 
         hpuInputs.resOrient,
@@ -193,7 +193,7 @@ async function updateHpuDiv(){
     if(hpuAssem.totalCost != null){
         buildHpuNumberDisplay(hpuAssem);
         buildValveDisplay(valveAssem);
-        displayPartNumDiv();    
+        displayPartNumDiv();
     };
 
 };
