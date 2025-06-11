@@ -1,21 +1,20 @@
-const defaultEmail = 'configurator@suncoastcontrols.com';
+const defaultEmail = "configurator@suncoastcontrols.com";
 
-const generateEmailButtons = document.querySelectorAll('.generate-email');
+const generateEmailButtons = document.querySelectorAll(".generate-email");
 
-generateEmailButtons.forEach(button => {
-    button.addEventListener('click', e => {
+generateEmailButtons.forEach((button) => {
+    button.addEventListener("click", (e) => {
         e.preventDefault();
 
         updateContactInputs();
-    
-        if(currConfigurator == 'hpu'){
-            generateHpuEmail();
-        } else if(currConfigurator == 'ms'){
-            generateMsEmail();
-        } else if(currConfigurator == 'hmi'){
-            console.log('hmi email not currently available');
-        };
 
+        if (currConfigurator == "hpu") {
+            generateHpuEmail();
+        } else if (currConfigurator == "ms") {
+            generateMsEmail();
+        } else if (currConfigurator == "hmi") {
+            console.log("hmi email not currently available");
+        }
     });
 });
 
@@ -27,12 +26,11 @@ const createMailtoLink = (email, subject, bodyText) => {
 };
 
 const genContactEmailBody = () => {
-
     let contactHtml = `\n\nCUSTOMER INFO:\n${contactInputs.contactName}\n${contactInputs.companyName}\n${contactInputs.email}\n${contactInputs.phone}`;
 
-    if(currentUser.userType == 'cust' && contactInputs.distributor){
+    if (currentUser.userType == "cust" && contactInputs.distributor) {
         contactHtml += `\n${contactInputs.distributor}`;
-    };
+    }
 
     return contactHtml;
-}
+};

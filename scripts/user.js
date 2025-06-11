@@ -1,23 +1,23 @@
-class User{
-    constructor(){
-        this.username = null,
-        this.userType = null,
-        this.password = null
+class User {
+    constructor() {
+        (this.username = null), (this.userType = null), (this.password = null);
     }
 
-    async getUserData(){
+    async getUserData() {
         const uri = "data/userData.json";
         const response = await fetch(uri);
         const data = await response.json();
         return data;
     }
 
-    async login(un, pw){
+    async login(un, pw) {
         const data = await this.getUserData();
 
-        let result = data.filter(user => user.username === un && user.password === pw)
+        let result = data.filter(
+            (user) => user.username === un && user.password === pw
+        );
 
-        if(result.length == 0){
+        if (result.length == 0) {
             return this;
         } else {
             this.username = result[0].username;
