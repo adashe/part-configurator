@@ -87,7 +87,9 @@ class HpuAssembly {
                 // Show error message only when number is initially generated, not after admin edits are made
                 if (partNumDiv.style.display != "block") {
                     displayErrorMsg(
-                        "No valid vertical reservoir results.<br>Replaced with horizontal reservoir."
+                        `No valid vertical reservoir results.<br>Minimum capacity required is ${minCap.toFixed(
+                            2
+                        )} gpm.<br>Largest vertical reservoir available is 20 gpm.<br>Replaced with horizontal reservoir.`
                     );
                 }
             } else {
@@ -107,8 +109,11 @@ class HpuAssembly {
         );
 
         if (result.length == 0) {
-            console.log("No valid reservoir results.");
-            displayErrorMsg("No valid reservoir results.");
+            displayErrorMsg(
+                `No valid reservoir results. <br>Minimum capacity required is ${minCap.toFixed(
+                    2
+                )} gpm. <br>Largest horizontal reservoir available is 80gpm.`
+            );
         } else {
             this.reservoir = result.reduce((prev, curr) =>
                 prev.capacity < curr.capacity ? prev : curr
@@ -161,7 +166,7 @@ class HpuAssembly {
         return this.pump;
     }
 
-    async calcMotor(maxPres, maxFl) {
+    async calcMotor(maxPres, maxFl, resOrient) {
         const data = await this.getMotorData();
 
         // CALCULATION //
@@ -181,9 +186,22 @@ class HpuAssembly {
 
         let result = [];
 
+        // Check MF - Reservoir compatibility
+        // V reservoirs cannot be paired with MF motors
+        // Default to MTC motor if a (valid) vertical reservoir has been selected by user
+        // Uses a vertical reservoir max capacity 20gpm based on available reservoir options as of Sept 2025
+        const minCap = this.pump.gpm1750 * 3;
+        // console.log(minCap);
+
+        // if a vertical reservoir is selected but the capacity of over 20gpm,
+        // the reservoir will be exchanged for a horizontal reservoir at the reservoir selection step
+        const mfCompatible = resOrient == "horizontal" || minCap > 20;
+        // console.log(mfCompatible);
+
+        // Selects a F type motor if the pump mount type is SAE A and the reservoir is MF compatible
         if (this.pump.mountType == "SAE A") {
             // First look for valid results for SAE A pumps among SAE A type motors
-            if (this.pump.mountType == "SAE A") {
+            if (this.pump.mountType == "SAE A" && mfCompatible) {
                 result = data.filter(
                     (motor) => motor.type == "MF" && motor.outputHP >= minHP
                 );
@@ -427,7 +445,7 @@ class HpuAssembly {
         numFlowCtrl
     ) {
         await this.calcPump(maxPres, maxFl, appType);
-        await this.calcMotor(maxPres, maxFl);
+        await this.calcMotor(maxPres, maxFl, resOrient);
         await this.calcReservoir(resOrient);
         await this.calcManifold(numSt, portSz);
         await this.calcHeatExchanger(
