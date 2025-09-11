@@ -138,7 +138,7 @@ class HpuAssembly {
         const rotationSpeed = 1750;
         const minDis = (231 * maxFl) / rotationSpeed;
 
-        console.log("minDis:", minDis);
+        // console.log("minDis:", minDis);
 
         let result = [];
 
@@ -161,7 +161,7 @@ class HpuAssembly {
             );
         }
 
-        console.log("pump", this.pump);
+        // console.log("pump", this.pump);
 
         return this.pump;
     }
