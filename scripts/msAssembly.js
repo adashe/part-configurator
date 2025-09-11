@@ -143,7 +143,7 @@ class MsAssembly {
 
         const maxY = Math.max(...yArr);
         // console.log(...yArr);
-        // console.log('maxY', maxY);
+        // console.log("maxY", maxY);
 
         let result;
 
@@ -168,8 +168,10 @@ class MsAssembly {
                     enclosure.code.includes("24H")
                 );
             } else if (numStarters == 3) {
-                result = filteredData.filter((enclosure) =>
-                    enclosure.code.includes("18H")
+                result = filteredData.filter(
+                    (enclosure) =>
+                        enclosure.code.includes("18H") ||
+                        enclosure.code.includes("20HS")
                 );
             } else if (numStarters < 3) {
                 result = filteredData.filter((enclosure) =>
