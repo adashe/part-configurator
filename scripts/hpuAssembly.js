@@ -393,19 +393,19 @@ class HpuAssembly {
 
         if (this.reservoir.code.includes("H")) {
             prices = [
-                this.reservoir.hCost,
-                this.pump.hCost,
-                this.motor.hCost,
-                this.manifold.hCost,
-                this.heatExchanger.hCost,
+                this.reservoir.hCost || 0.0,
+                this.pump.hCost || 0.0,
+                this.motor.hCost || 0.0,
+                this.manifold.hCost || 0.0,
+                this.heatExchanger.hCost || 0.0,
             ];
         } else if (this.reservoir.code.includes("V")) {
             prices = [
-                this.reservoir.vCost,
-                this.pump.vCost,
-                this.motor.vCost,
-                this.manifold.vCost,
-                this.heatExchanger.vCost,
+                this.reservoir.vCost || 0.0,
+                this.pump.vCost || 0.0,
+                this.motor.vCost || 0.0,
+                this.manifold.vCost || 0.0,
+                this.heatExchanger.vCost || 0.0,
             ];
         }
 
@@ -421,13 +421,12 @@ class HpuAssembly {
         if (prices.includes(null)) {
             console.log("Invalid configuration.");
             displayErrorMsg(
-                "Invalid vertical or horizontal configuration. Pricing may not be accurate."
+                "Invalid vertical or horizontal configuration. Pricing may be inaccurate."
             );
-            this.totalCost = cost.toFixed(2);
-        } else {
-            cost = prices.reduce((x, y) => x + y, cost);
-            this.totalCost = cost.toFixed(2);
         }
+
+        cost = prices.reduce((x, y) => x + y, cost);
+        this.totalCost = cost.toFixed(2);
 
         // console.log('prices', prices);
         // console.log('hpu cost', this.totalCost, typeof this.totalCost);
