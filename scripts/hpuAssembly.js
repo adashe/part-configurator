@@ -420,8 +420,10 @@ class HpuAssembly {
 
         if (prices.includes(null)) {
             console.log("Invalid configuration.");
-            displayErrorMsg("Invalid vertical or horizontal configuration.");
-            this.totalCost = null;
+            displayErrorMsg(
+                "Invalid vertical or horizontal configuration. Pricing may not be accurate."
+            );
+            this.totalCost = cost.toFixed(2);
         } else {
             cost = prices.reduce((x, y) => x + y, cost);
             this.totalCost = cost.toFixed(2);
