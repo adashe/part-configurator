@@ -418,12 +418,9 @@ class HpuAssembly {
             // console.log('adding adapter B cost', this.motor.SAEBadapterCost);
         }
 
-        // if (prices.includes(null)) {
-        //     console.log("Invalid configuration.");
-        //     displayErrorMsg(
-        //         "Invalid vertical or horizontal configuration. Pricing may be inaccurate."
-        //     );
-        // }
+        if (prices.includes(0)) {
+            console.log("Invalid configuration.");
+        }
 
         cost = prices.reduce((x, y) => x + y, cost);
         this.totalCost = cost.toFixed(2);
