@@ -74,12 +74,12 @@ class HpuAssembly {
 
         if (resOrient == "vertical") {
             filteredData = data.filter((reservoir) =>
-                reservoir.code.includes("V")
+                reservoir.code.includes("V"),
             );
             minCap = this.pump.gpm1750 * 3;
             // console.log('V minCap:', minCap);
             result = filteredData.filter(
-                (reservoir) => reservoir.capacity >= minCap
+                (reservoir) => reservoir.capacity >= minCap,
             );
 
             // Return vertical reservoir, or replace with horizontal reservoir if no valid vertical reservoir results
@@ -88,13 +88,13 @@ class HpuAssembly {
                 if (partNumDiv.style.display != "block") {
                     displayErrorMsg(
                         `No valid vertical reservoir results.<br>Minimum capacity required is ${minCap.toFixed(
-                            2
-                        )} gpm.<br>Largest vertical reservoir available is 20 gpm.<br>Replaced with horizontal reservoir.`
+                            2,
+                        )} gpm.<br>Largest vertical reservoir available is 20 gpm.<br>Replaced with horizontal reservoir.`,
                     );
                 }
             } else {
                 this.reservoir = result.reduce((prev, curr) =>
-                    prev.capacity < curr.capacity ? prev : curr
+                    prev.capacity < curr.capacity ? prev : curr,
                 );
                 return this.reservoir;
             }
@@ -105,18 +105,18 @@ class HpuAssembly {
         minCap = this.pump.gpm1750 * 2.5;
         // console.log('H minCap:', minCap);
         result = filteredData.filter(
-            (reservoir) => reservoir.capacity >= minCap
+            (reservoir) => reservoir.capacity >= minCap,
         );
 
         if (result.length == 0) {
             displayErrorMsg(
                 `No valid reservoir results. <br>Minimum capacity required is ${minCap.toFixed(
-                    2
-                )} gpm. <br>Largest horizontal reservoir available is 80gpm.`
+                    2,
+                )} gpm. <br>Largest horizontal reservoir available is 80gpm.`,
             );
         } else {
             this.reservoir = result.reduce((prev, curr) =>
-                prev.capacity < curr.capacity ? prev : curr
+                prev.capacity < curr.capacity ? prev : curr,
             );
         }
 
@@ -144,11 +144,11 @@ class HpuAssembly {
 
         if (maxPres >= 1500 || appType == "pressure-holding") {
             result = data.filter(
-                (pump) => pump.type == "piston" && pump.dispCID >= minDis
+                (pump) => pump.type == "piston" && pump.dispCID >= minDis,
             );
         } else {
             result = data.filter(
-                (pump) => pump.type == "gear" && pump.dispCID >= minDis
+                (pump) => pump.type == "gear" && pump.dispCID >= minDis,
             );
         }
 
@@ -157,7 +157,7 @@ class HpuAssembly {
             displayErrorMsg("Cannot calculate pump, flow is too high.");
         } else {
             this.pump = result.reduce((prev, curr) =>
-                prev.dispCID < curr.dispCID ? prev : curr
+                prev.dispCID < curr.dispCID ? prev : curr,
             );
         }
 
@@ -203,7 +203,7 @@ class HpuAssembly {
             // First look for valid results for SAE A pumps among SAE A type motors
             if (this.pump.mountType == "SAE A" && mfCompatible) {
                 result = data.filter(
-                    (motor) => motor.type == "MF" && motor.outputHP >= minHP
+                    (motor) => motor.type == "MF" && motor.outputHP >= minHP,
                 );
             }
 
@@ -213,7 +213,7 @@ class HpuAssembly {
                     (motor) =>
                         motor.type == "MTC" &&
                         motor.SAEAadapterCost &&
-                        motor.outputHP >= minHP
+                        motor.outputHP >= minHP,
                 );
             }
         }
@@ -221,7 +221,7 @@ class HpuAssembly {
         // If the pump mount type is SAE B, look for valid results in SAE B motors
         if (this.pump.mountType == "SAE B") {
             result = data.filter(
-                (motor) => motor.type == "MTC" && motor.outputHP >= minHP
+                (motor) => motor.type == "MTC" && motor.outputHP >= minHP,
             );
         }
 
@@ -233,7 +233,7 @@ class HpuAssembly {
         } else {
             // Assign smallest sufficient selection of the valid results to hpu object
             this.motor = result.reduce((prev, curr) =>
-                prev.outputHP < curr.outputHP ? prev : curr
+                prev.outputHP < curr.outputHP ? prev : curr,
             );
         }
 
@@ -265,7 +265,7 @@ class HpuAssembly {
             result = data.filter(
                 (manifold) =>
                     manifold.valvePattern == "D03" &&
-                    manifold.numStations == numSt
+                    manifold.numStations == numSt,
             );
             this.manifold = result[0];
         } else if (portSz == "D05") {
@@ -273,7 +273,7 @@ class HpuAssembly {
             result = data.filter(
                 (manifold) =>
                     manifold.valvePattern == "D05" &&
-                    manifold.numStations == numSt
+                    manifold.numStations == numSt,
             );
             this.manifold = result[0];
         } else {
@@ -359,12 +359,12 @@ class HpuAssembly {
         if (htExType == "air") {
             result = data.filter(
                 (exchanger) =>
-                    exchanger.type == "AIR" && exchanger.heatDis >= reqDis
+                    exchanger.type == "AIR" && exchanger.heatDis >= reqDis,
             );
         } else if ((htExType = "water")) {
             result = data.filter(
                 (exchanger) =>
-                    exchanger.type == "WATER" && exchanger.heatDis >= reqDis
+                    exchanger.type == "WATER" && exchanger.heatDis >= reqDis,
             );
         } else {
             this.heatExchanger = data[0];
@@ -376,7 +376,7 @@ class HpuAssembly {
             displayErrorMsg("No valid heat exchanger results.");
         } else {
             this.heatExchanger = result.reduce((prev, curr) =>
-                prev.heatDis < curr.heatDis ? prev : curr
+                prev.heatDis < curr.heatDis ? prev : curr,
             );
         }
 
@@ -420,9 +420,9 @@ class HpuAssembly {
 
         if (prices.includes(0)) {
             console.log("Invalid configuration.");
-            displayErrorMsg(
-                "Invalid vertical or horizontal configuration. Pricing may be inaccurate."
-            );
+            // displayErrorMsg(
+            //     "Invalid vertical or horizontal configuration. Pricing may be inaccurate."
+            // );
         }
 
         cost = prices.reduce((x, y) => x + y, cost);
@@ -443,7 +443,7 @@ class HpuAssembly {
         numSt,
         portSz,
         numLValves,
-        numFlowCtrl
+        numFlowCtrl,
     ) {
         await this.calcPump(maxPres, maxFl, appType);
         await this.calcMotor(maxPres, maxFl, resOrient);
@@ -454,7 +454,7 @@ class HpuAssembly {
             maxFl,
             htExType,
             numLValves,
-            numFlowCtrl
+            numFlowCtrl,
         );
         this.calcCost();
 
