@@ -419,7 +419,7 @@ class HpuAssembly {
         }
 
         if (prices.includes(0)) {
-            console.log("Invalid configuration.");
+            console.log("Sorry, this might be an invalid configuration.");
         }
 
         cost = prices.reduce((x, y) => x + y, cost);
