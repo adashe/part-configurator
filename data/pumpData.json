@@ -115,7 +115,7 @@
         "description": "PMP PISTON 4GPM .488CID 3000 PSI",
         "dispCID": 0.488,
         "hCost": 2055.52,
-        "vCost": 0.0,
+        "vCost": 1121.46,
         "type": "piston",
         "mountType": "SAE A",
         "gpm1750": 3.7
