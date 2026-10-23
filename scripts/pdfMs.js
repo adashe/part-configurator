@@ -26,7 +26,7 @@ const fillMsPdfDets = () => {
     const baseHTML = `
         <h3>BASE ASSEMBLY</h3>
         <ul>
-            <li>Enclosure Material:  ${msAssem.enclosure.dimensions}</li>
+            <li>Enclosure Material:  ${msAssem.enclosure.material}</li>
             <li>Enclosure Dimensions: ${msAssem.enclosure.dimensions} in</li>
             <li>Disconnect Size: ${msAssem.disconnect.FLA}</li>
             <li>Base Price: $${totalBaseCost.toFixed(2)}</li>
