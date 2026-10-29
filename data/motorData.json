@@ -73,7 +73,7 @@
         "outputHP": 3,
         "hCost": 1502.44,
         "vCost": 1570.37,
-        "SAEAadapterCost": null,
+        "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 300.0
     },
     {
@@ -84,7 +84,7 @@
         "outputHP": 5,
         "hCost": 1715.1,
         "vCost": 1783.04,
-        "SAEAadapterCost": null,
+        "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 300.0
     },
     {
@@ -95,7 +95,7 @@
         "outputHP": 7.5,
         "hCost": 2182.55,
         "vCost": 2250.48,
-        "SAEAadapterCost": null,
+        "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 318.52
     },
     {
@@ -106,7 +106,7 @@
         "outputHP": 10,
         "hCost": 2588.07,
         "vCost": 2612.81,
-        "SAEAadapterCost": null,
+        "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 318.52
     },
     {
@@ -116,7 +116,7 @@
         "description": "15HP 1800 TEFC 254TC 208-230/460/60/3",
         "outputHP": 15,
         "hCost": 3622.07,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 362.96
     },
@@ -127,7 +127,7 @@
         "description": "20HP 1800 TEFC 256TC 208-230/460/60/3",
         "outputHP": 20,
         "hCost": 4119.63,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": 348.15,
         "SAEBadapterCost": 362.96
     },
@@ -138,7 +138,7 @@
         "description": "25HP 1800 TEFC 284TC 208-230/460/60/3",
         "outputHP": 25,
         "hCost": 5435.89,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": 633.33,
         "SAEBadapterCost": 633.33
     },
@@ -149,7 +149,7 @@
         "description": "30HP 1800 TEFC 286TC 208-230/460/60/3",
         "outputHP": 30,
         "hCost": 6100.7,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": 633.33,
         "SAEBadapterCost": 633.33
     },
@@ -160,7 +160,7 @@
         "description": "40HP 1800 TEFC 324TC 208-230/460/60/3",
         "outputHP": 40,
         "hCost": 7644.47,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": null,
         "SAEBadapterCost": 1129.63
     },
@@ -171,7 +171,7 @@
         "description": "50HP 1800 TEFC 326TC 208-230/460/60/3",
         "outputHP": 50,
         "hCost": 8627.32,
-        "vCost": 0,
+        "vCost": null,
         "SAEAadapterCost": null,
         "SAEBadapterCost": 1129.63
     }
